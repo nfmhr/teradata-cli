@@ -12,7 +12,8 @@ require 'teradata-cli/exception'
 
 module TeradataCli
 
-  class BadLogonString < Error; end
+  class BadLogonString < Error;
+  end
 
   class LogonString
     def LogonString.intern(arg)
@@ -20,8 +21,8 @@ module TeradataCli
     end
 
     def LogonString.parse(str)
-      m = %r<\A(?:([^/\s]+)/)?(\w+),(\w+)(?:,('.*'))?\z>.match(str) or
-          raise BadLogonString, "bad logon string: #{str.inspect}"
+      m = /([^"]*)\/([^"]*),([^"]*)/.match(str) or
+        raise BadLogonString, "bad logon string: #{str.inspect}"
       new(* m.captures)
     end
 
@@ -62,15 +63,19 @@ module TeradataCli
     attr_reader :name
     alias to_s name
 
-    if defined?(::Encoding)   # M17N
+    if defined?(::Encoding) # M17N
       def encoding
         case @name
-        when /UTF8/i then Encoding::UTF_8
-        when /KANJISJIS_0S/i then Encoding::Windows_31J
-        when /KANJIEUC_0U/i then Encoding::EUC_JP
-        when /ASCII/i then Encoding::US_ASCII
-        else
-          raise ArgumentError, "could not convert session charset to encoding name: #{sc.inspect}"
+          when /UTF8/i then
+            Encoding::UTF_8
+          when /KANJISJIS_0S/i then
+            Encoding::Windows_31J
+          when /KANJIEUC_0U/i then
+            Encoding::EUC_JP
+          when /ASCII/i then
+            Encoding::US_ASCII
+          else
+            raise ArgumentError, "could not convert session charset to encoding name: #{sc.inspect}"
         end
       end
     else
@@ -92,55 +97,55 @@ module TeradataCli
   end
 
   SESSION_ATTRIBUTES = [
-    :user_name,
-    :account_name,
-    :logon_date,
-    :logon_time,
-    :current_database,
-    :collation,
-    :character_set,
-    :transaction_semantics,
-    :current_dateform,
-    :timezone,
-    :default_character_type,
-    :export_latin,
-    :export_unicode,
-    :export_unicode_adjust,
-    :export_kanjisjis,
-    :export_graphic,
-    :default_date_format,
-    :radix_separator,
-    :group_separator,
-    :grouping_rule,
-    :currency_radix_separator,
-    :currency_graphic_rule,
-    :currency_grouping_rule,
-    :currency_name,
-    :currency,
-    :iso_currency,
-    :dual_currency_name,
-    :dual_currency,
-    :dual_iso_currency,
-    :default_byteint_format,
-    :default_integer_format,
-    :default_smallint_format,
-    :default_numeric_format,
-    :default_real_format,
-    :default_time_format,
-    :default_timestamp_format,
-    :current_role,
-    :logon_account,
-    :profile,
-    :ldap,
-    :audit_trail_id,
-    :current_isolation_level,
-    :default_bigint_format,
-    :query_band
+      :user_name,
+      :account_name,
+      :logon_date,
+      :logon_time,
+      :current_database,
+      :collation,
+      :character_set,
+      :transaction_semantics,
+      :current_dateform,
+      :timezone,
+      :default_character_type,
+      :export_latin,
+      :export_unicode,
+      :export_unicode_adjust,
+      :export_kanjisjis,
+      :export_graphic,
+      :default_date_format,
+      :radix_separator,
+      :group_separator,
+      :grouping_rule,
+      :currency_radix_separator,
+      :currency_graphic_rule,
+      :currency_grouping_rule,
+      :currency_name,
+      :currency,
+      :iso_currency,
+      :dual_currency_name,
+      :dual_currency,
+      :dual_iso_currency,
+      :default_byteint_format,
+      :default_integer_format,
+      :default_smallint_format,
+      :default_numeric_format,
+      :default_real_format,
+      :default_time_format,
+      :default_timestamp_format,
+      :current_role,
+      :logon_account,
+      :profile,
+      :ldap,
+      :audit_trail_id,
+      :current_isolation_level,
+      :default_bigint_format,
+      :query_band
   ]
 
   SessionInfo = Struct.new(*SESSION_ATTRIBUTES)
 
-  class SessionInfo   # reopen
+  class SessionInfo # reopen
     extend MetadataUtils
 
     def SessionInfo.for_record(rec)
