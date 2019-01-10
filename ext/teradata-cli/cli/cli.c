@@ -83,7 +83,7 @@ cli_free(struct rb_cli *p)
 }
 
   static VALUE
-cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset)
+cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_mode)
 {
   struct rb_cli *p;
   Int32 status;
@@ -96,6 +96,7 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset)
 
   StringValue(logon_string);
   StringValue(session_charset);
+  StringValue(tx_mode);
 
   DBCHINI(&status, dummy, &p->dbcarea);
   if (status != EM_OK) {
@@ -105,20 +106,20 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset)
   cli_initialized = Qtrue;
 
   p->dbcarea.change_opts = 'Y';
-  p->dbcarea.wait_for_resp = 'Y';    // Complete response and return.
-  p->dbcarea.keep_resp = 'N';        // We do not rewind.
-  p->dbcarea.wait_across_crash = 'Y';  // CLI returns when DBC is not available.
+  p->dbcarea.wait_for_resp = 'Y';     // Complete response and return.
+  p->dbcarea.keep_resp = 'N';         // We do not rewind.
+  p->dbcarea.wait_across_crash = 'Y'; // CLI returns when DBC is not available.
   p->dbcarea.tell_about_crash = 'Y';
   p->dbcarea.use_presence_bits = 'N'; // We do not send data by record
   p->dbcarea.var_len_req = 'N';
   p->dbcarea.var_len_fetch = 'N';
-  p->dbcarea.loc_mode = 'Y';         // Locate mode (not move mode)
+  p->dbcarea.loc_mode = 'Y';          // Locate mode (not move mode)
   p->dbcarea.parcel_mode = 'Y';
-  p->dbcarea.save_resp_buf = 'N';    // free response buffer
-  p->dbcarea.two_resp_bufs = 'N';    // disable double buffering
+  p->dbcarea.save_resp_buf = 'N';     // free response buffer
+  p->dbcarea.two_resp_bufs = 'N';     // disable double buffering
   p->dbcarea.ret_time = 'N';
-  p->dbcarea.resp_mode = 'I';        // Indicator mode
-  p->dbcarea.req_proc_opt = 'B';     // process request and return response,
+  p->dbcarea.resp_mode = 'I';         // Indicator mode
+  p->dbcarea.req_proc_opt = 'B';      // process request and return response,
   // with column names and EXPLAIN data.
 
   // try to increase req_buf_len
@@ -126,10 +127,14 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset)
   p->dbcarea.req_buf_len = 65535; //64K
   p->dbcarea.maximum_parcel = 'H';
 
-  p->dbcarea.charset_type = 'N';     // multibyte character set
-  snprintf(p->session_charset, CHARSET_BUFSIZE,
-      "%-30s", StringValueCStr(session_charset));
+  p->dbcarea.charset_type = 'N';      // multibyte character set
+  snprintf(p->session_charset, CHARSET_BUFSIZE, "%-30s", StringValueCStr(session_charset));
   p->dbcarea.inter_ptr = p->session_charset;
+  
+  if (strcmp(StringValueCStr(tx_mode), "ANSI") == 0) {
+    p->dbcarea.connect_type = 'C';
+    p->dbcarea.tx_semantics = 'A';
+  }
 
   logon(p, StringValueCStr(logon_string));
   p->initialized = Qtrue;
@@ -353,7 +358,7 @@ Init_cli(void)
   rb_define_const(CLI, "Id", rb_str_new2("$Id: cli.c 629 2010-02-17 01:46:11Z aamine $"));
   rb_define_singleton_method(CLI, "cleanup", cli_cleanup, 0);
   rb_define_alloc_func(CLI, cli_s_allocate);
-  rb_define_private_method(CLI, "initialize", cli_initialize, 2);
+  rb_define_private_method(CLI, "initialize", cli_initialize, 3);
   rb_define_method(CLI, "logoff", cli_logoff, 0);
   rb_define_method(CLI, "logging_on?", cli_logging_on_p, 0);
   rb_define_method(CLI, "session_charset", cli_session_charset, 0);

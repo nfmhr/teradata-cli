@@ -58,11 +58,13 @@ module TeradataCli
       @external_encoding = @session_charset.encoding
       @internal_encoding = internal_encoding
       ex = StringExtractor.get(@external_encoding, @internal_encoding)
+      @tx_mode = options[:tx_mode] || 'BTET'
       log { "session charset = #{@session_charset}" }
       log { "external encoding = #{@external_encoding}" }
       log { "internal encoding = #{@internal_encoding}" }
+      log { "tx mode = #{@tx_mode}" }
       log { "logon... (#{@logon_string.safe_string})" }
-      @cli = CLI.new(logon_string.to_s, @session_charset.name)
+      @cli = CLI.new(logon_string.to_s, @session_charset.name, @tx_mode.to_s)
       log { "logon succeeded" }
       @cli.string_extractor = ex
       @cli.logger = @logger
