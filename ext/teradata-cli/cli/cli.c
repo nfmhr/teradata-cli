@@ -106,7 +106,7 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_m
   cli_initialized = Qtrue;
 
   p->dbcarea.change_opts = 'Y';
-  p->dbcarea.wait_for_resp = 'N';     // Complete response and return.
+  p->dbcarea.wait_for_resp = 'Y';     // Complete response and return.
   p->dbcarea.keep_resp = 'N';         // We do not rewind.
   p->dbcarea.wait_across_crash = 'Y'; // CLI returns when DBC is not available.
   p->dbcarea.tell_about_crash = 'Y';
@@ -116,7 +116,7 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_m
   p->dbcarea.loc_mode = 'Y';          // Locate mode (not move mode)
   p->dbcarea.parcel_mode = 'Y';
   p->dbcarea.save_resp_buf = 'N';     // free response buffer
-  p->dbcarea.two_resp_bufs = 'Y';     // disable double buffering
+  p->dbcarea.two_resp_bufs = 'Y';
   p->dbcarea.ret_time = 'N';
   p->dbcarea.resp_mode = 'I';         // Indicator mode
   p->dbcarea.req_proc_opt = 'B';      // process request and return response,
