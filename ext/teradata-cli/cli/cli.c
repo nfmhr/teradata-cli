@@ -124,7 +124,8 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_m
 
   // try to increase req_buf_len
   // see http://forums.teradata.com/forum/database/connect-failed-cli2-badbufrq302-invalid-buffer-size
-  p->dbcarea.req_buf_len = 65535; //64K
+  p->dbcarea.req_buf_len = 65535;
+  p->dbcarea.resp_buf_len = 65535;
   p->dbcarea.maximum_parcel = 'H';
 
   p->dbcarea.charset_type = 'N';      // multibyte character set
