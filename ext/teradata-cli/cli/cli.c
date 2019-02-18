@@ -236,6 +236,8 @@ cli_end_request(VALUE self)
 cli_fetch(VALUE self)
 {
   struct rb_cli *p = get_cli(self);
+  p->dbcarea.i_sess_id = p->dbcarea.o_sess_id;
+  p->dbcarea.i_req_id = p->dbcarea.o_req_id;
   dispatch(p, DBFFET);
   return Qnil;
 }
