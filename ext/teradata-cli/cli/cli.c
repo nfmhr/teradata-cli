@@ -106,7 +106,7 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_m
   cli_initialized = Qtrue;
 
   p->dbcarea.change_opts = 'Y';
-  p->dbcarea.wait_for_resp = 'Y';     // Complete response and return.
+  p->dbcarea.wait_for_resp = 'N';     // Complete response and return.
   p->dbcarea.keep_resp = 'N';         // We do not rewind.
   p->dbcarea.wait_across_crash = 'Y'; // CLI returns when DBC is not available.
   p->dbcarea.tell_about_crash = 'Y';
