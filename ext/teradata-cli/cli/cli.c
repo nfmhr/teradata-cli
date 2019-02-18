@@ -116,7 +116,7 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_m
   p->dbcarea.loc_mode = 'Y';          // Locate mode (not move mode)
   p->dbcarea.parcel_mode = 'Y';
   p->dbcarea.save_resp_buf = 'N';     // free response buffer
-  p->dbcarea.two_resp_bufs = 'N';     // disable double buffering
+  p->dbcarea.two_resp_bufs = 'Y';     // disable double buffering
   p->dbcarea.ret_time = 'N';
   p->dbcarea.resp_mode = 'I';         // Indicator mode
   p->dbcarea.req_proc_opt = 'B';      // process request and return response,
