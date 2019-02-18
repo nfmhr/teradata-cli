@@ -228,6 +228,8 @@ cli_send_request(VALUE self, VALUE sql_value)
 cli_end_request(VALUE self)
 {
   struct rb_cli *p = get_cli(self);
+  p->dbcarea.i_sess_id = p->dbcarea.o_sess_id;
+  p->dbcarea.i_req_id = p->dbcarea.o_req_id;
   dispatch(p, DBFERQ);
   return Qnil;
 }
