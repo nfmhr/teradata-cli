@@ -108,7 +108,7 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_m
   p->dbcarea.change_opts = 'Y';
   p->dbcarea.wait_for_resp = 'Y';     // Complete response and return.
   p->dbcarea.keep_resp = 'N';         // We do not rewind.
-  p->dbcarea.wait_across_crash = 'Y'; // CLI returns when DBC is not available.
+  p->dbcarea.wait_across_crash = 'N';
   p->dbcarea.tell_about_crash = 'Y';
   p->dbcarea.use_presence_bits = 'N'; // We do not send data by record
   p->dbcarea.var_len_req = 'N';
@@ -120,7 +120,6 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_m
   p->dbcarea.ret_time = 'N';
   p->dbcarea.resp_mode = 'I';         // Indicator mode
   p->dbcarea.req_proc_opt = 'B';      // process request and return response, with column names and EXPLAIN data.
-  p->dbcarea.useDefaultConn = 'N';    // a new connection is established for stored procedures
 
   // try to increase req_buf_len
   // see http://forums.teradata.com/forum/database/connect-failed-cli2-badbufrq302-invalid-buffer-size
@@ -131,7 +130,9 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_m
   p->dbcarea.charset_type = 'N';      // multibyte character set
   snprintf(p->session_charset, CHARSET_BUFSIZE, "%-30s", StringValueCStr(session_charset));
   p->dbcarea.inter_ptr = p->session_charset;
-  
+
+  p->dbcarea.date_form = 'T';
+  p->dbcarea.connect_type = 'C';
   if (strcmp(StringValueCStr(tx_mode), "ANSI") == 0) {
     p->dbcarea.connect_type = 'C';
     p->dbcarea.tx_semantics = 'A';
