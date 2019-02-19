@@ -119,8 +119,8 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_m
   p->dbcarea.two_resp_bufs = 'Y';
   p->dbcarea.ret_time = 'N';
   p->dbcarea.resp_mode = 'I';         // Indicator mode
-  p->dbcarea.req_proc_opt = 'B';      // process request and return response,
-  // with column names and EXPLAIN data.
+  p->dbcarea.req_proc_opt = 'B';      // process request and return response, with column names and EXPLAIN data.
+  p->dbcarea.useDefaultConn = 'N';    // a new connection is established for stored procedures
 
   // try to increase req_buf_len
   // see http://forums.teradata.com/forum/database/connect-failed-cli2-badbufrq302-invalid-buffer-size
@@ -135,6 +135,8 @@ cli_initialize(VALUE self, VALUE logon_string, VALUE session_charset, VALUE tx_m
   if (strcmp(StringValueCStr(tx_mode), "ANSI") == 0) {
     p->dbcarea.connect_type = 'C';
     p->dbcarea.tx_semantics = 'A';
+  } else {
+    p->dbcarea.tx_semantics = 'T';
   }
 
   logon(p, StringValueCStr(logon_string));
