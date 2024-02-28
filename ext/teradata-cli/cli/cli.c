@@ -8,12 +8,12 @@
  *  the GNU LGPL2, Lesser General Public License version 2.
  */
 
-#include <ruby.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
 #include <sys/types.h>
+#include <ruby.h>
 
 #include <coptypes.h>
 #include <coperr.h>

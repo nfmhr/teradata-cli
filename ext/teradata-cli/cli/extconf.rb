@@ -6,7 +6,9 @@ def extconf_main
   $objs = %w(cli.o)
   dir_config 'cli'
   if have_library cliv2_libname
-    create_makefile 'teradata-cli/cli'
+    with_cflags('-Wdiscarded-qualifiers') do
+      create_makefile 'teradata-cli/cli'
+    end
   end
 end
 
